@@ -58,7 +58,7 @@ alarm_transitions = {}
 for indices in from_to:
     from_idx, to_idx_tuple = indices
     for to_idx in to_idx_tuple:
-        op_identifier = "m_{}_{}".format(from_idx, to_idx)
+        op_identifier = "a_{}_{}".format(from_idx, to_idx)
 
         transition = Transition(alarm_states[from_idx], alarm_states[to_idx], identifier=op_identifier)
         alarm_transitions[op_identifier] = transition
@@ -104,11 +104,18 @@ class Generator(StateMachine):
         return cls(states, transitions)
 
 # create paths from transitions (exemplary)
+# Sciezki glownego grafu
 path_1 = ["m_0_1", "m_1_2", "m_2_4"]
 path_2 = ["m_0_3", "m_3_0", "m_0_1", "m_1_2", "m_2_4"]
-paths = [path_1, path_2]
+paths_master = [path_1, path_2]
 
-for path in paths:
+# Sciezki grafu alarmu
+
+path_1 = ["a_0_1", "a_1_2"]
+path_2 = ["a_0_1", "a_1_3", "a_3_1", "a_1_2"]
+paths_alarm = [path_1, path_2]
+
+for path in paths_master:
     supervisor = Generator.create_master(master_states, master_transitions)
     print('\n'+str(supervisor))
 
@@ -137,3 +144,30 @@ for path in paths:
         if supervisor.current_state.value == "Awaria":
             # TODO: automata 5 (for) slave 5
             print("Awaria")
+
+for path in paths_alarm:
+
+    supervisor = Generator.create_master(alarm_states, alarm_transitions)
+    print('\n' + str(supervisor))
+
+    print("Executing path {}".format(path))
+
+    for event in path:
+        alarm_transitions[event]._run(supervisor)
+        print(supervisor.current_state)
+
+        if supervisor.current_state.value == "SygnalizacjaBledu":
+            # TODO: automata 1 for slave1
+            ...
+
+        if supervisor.current_state.value == "PotwierdzenieBledu":
+            # TODO: automata 2 for slave2
+            ...
+
+        if supervisor.current_state.value == "PowrotDoProcesu":
+            # TODO: automata 3 for slave3
+            print("Powrot do Procesu")
+
+        if supervisor.current_state.value == "WezwanieUR":
+            # TODO: automata 4 for slave4
+            ...
