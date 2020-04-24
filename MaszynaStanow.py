@@ -1,5 +1,7 @@
 from statemachine import StateMachine, State, Transition
 
+# ***************************** GRAF GLOWNEGO PROCESU ****************************
+
 # define states for a master (way of passing args to class)
 options = [
     {"name": "WjazdKaroserii", "initial": True, "value": "WjazdKaroserii"},  # 0
@@ -34,6 +36,34 @@ for indices in from_to:
 
         # add transition to source state
         master_states[from_idx].transitions.append(transition)
+
+# ************************************ GRAF ALARMU ****************************
+options_alarm = [
+    {"name": "SygnalizacjaBledu", "initial":True, "value": "SygnalizacjaBledu"},  # 0
+    {"name": "PotwierdzenieBledu", "initial":False, "value": "PotwierdzenieBledu"},  # 1
+    {"name": "PowrotDoProcesu", "initial":False, "value":"PowrotDoProcesu"},  # 2
+    {"name": "WezwanieUR", "initial":False, "value":"WezwanieUR"},  # 3
+]
+
+alarm_states = [State(**opt) for opt in options_alarm]
+
+from_to = [
+    [0, [1]],
+    [1, [2, 3]],
+    [3, [1]]
+]
+
+alarm_transitions = {}
+
+for indices in from_to:
+    from_idx, to_idx_tuple = indices
+    for to_idx in to_idx_tuple:
+        op_identifier = "m_{}_{}".format(from_idx, to_idx)
+
+        transition = Transition(alarm_states[from_idx], alarm_states[to_idx], identifier=op_identifier)
+        alarm_transitions[op_identifier] = transition
+
+        alarm_states[from_idx].transitions.append(transition)
 
 
 # create a generator class
