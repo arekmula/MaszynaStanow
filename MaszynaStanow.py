@@ -106,4 +106,4 @@ for path in paths:
             ...
         if supervisor.current_state.value == "Awaria":
             # TODO: automata 5 (for) slave 5
-            print("Awaria!")
+            print("Awaria")
