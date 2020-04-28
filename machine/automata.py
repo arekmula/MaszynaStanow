@@ -67,6 +67,17 @@ class Automata():
     def getPaths(self):
         return self.paths
 
+    def getPath(self, state1, state2):
+
+        for path in self.paths:
+            if state1 in path and state2 in path:
+                if path.index(state1) < path.index(state2):
+                    return path[path.index(state1):path.index(state2)+1]
+                else:
+                    return path[path.index(state2):path.index(state1)+1]
+
+        return []
+
     def executePaths(self, automats):
         for path in self.paths:
             supervisor = Generator.create_master(self.states, self.stateTransitions)
