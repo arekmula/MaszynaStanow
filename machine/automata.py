@@ -59,7 +59,7 @@ class Automata():
 
     def addPaths(self, newPaths):
         """
-        :param newPath: paths given in "opLetter_id_id" format as list
+        :param newPath: paths given in "opLetter_fromID_toID" format as list
         :return:
         """
         self.paths.append(newPaths)

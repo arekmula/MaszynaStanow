@@ -1,7 +1,6 @@
 from statemachine import StateMachine, State, Transition
 
 from machine import automata
-from machine import generator
 
 # ******************* MASTER AUTOMATA **********************
 master = automata.Automata()
