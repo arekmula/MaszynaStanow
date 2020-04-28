@@ -67,7 +67,7 @@ class Automata():
     def getPaths(self):
         return self.paths
 
-    def executePaths(self):
+    def executePaths(self, automats):
         for path in self.paths:
             supervisor = Generator.create_master(self.states, self.stateTransitions)
             print('\n'+str(supervisor))
@@ -77,8 +77,7 @@ class Automata():
                 self.stateTransitions[event]._run(supervisor)
                 print(supervisor.current_state)
 
-                for opt in self.options:
-                    if supervisor.current_state.value == opt["value"]:
-                        # TODO: automata
-                        print(opt["value"])
-                        ...
+                for key in automats:
+                    if supervisor.current_state.value == key:
+                        print("Executing {} automat".format(key))
+                        automats[key].executePaths(automats)

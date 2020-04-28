@@ -23,20 +23,20 @@ master.createTransitions("m")
 master_transitions = master.getTransitions()
 
 # ******************** ALARM AUTOMATA ***********************
-alarm = automata.Automata()
-alarm.defineState("SygnalizacjaBledu", True, "SygnalizacjaBledu")
-alarm.defineState("PotwierdzenieBledu", False, "PotwierdzenieBledu")
-alarm.defineState("PowrotDoProcesu", False, "PowrotDoProcesu")
-alarm.defineState("WezwanieUR", False, "WezwanieUR")
+Awaria = automata.Automata()
+Awaria.defineState("SygnalizacjaBledu", True, "SygnalizacjaBledu")
+Awaria.defineState("PotwierdzenieBledu", False, "PotwierdzenieBledu")
+Awaria.defineState("PowrotDoProcesu", False, "PowrotDoProcesu")
+Awaria.defineState("WezwanieUR", False, "WezwanieUR")
 
-alarm_states = alarm.getStatesObjects()
+alarm_states = Awaria.getStatesObjects()
 
-alarm.validTransitions(0, [1])
-alarm.validTransitions(1, [2, 3])
-alarm.validTransitions(3, [1])
+Awaria.validTransitions(0, [1])
+Awaria.validTransitions(1, [2, 3])
+Awaria.validTransitions(3, [1])
 
-alarm.createTransitions("a")
-alarm_transitions = alarm.getTransitions()
+Awaria.createTransitions("a")
+alarm_transitions = Awaria.getTransitions()
 
 
 # create a generator class
@@ -50,9 +50,15 @@ paths_master = master.getPaths()
 
 # Sciezki grafu alarmu
 
-alarm.addPaths(["a_0_1", "a_1_2"])
-alarm.addPaths(["a_0_1", "a_1_3", "a_3_1", "a_1_2"])
-paths_alarm = alarm.getPaths()
+Awaria.addPaths(["a_0_1", "a_1_2"])
+Awaria.addPaths(["a_0_1", "a_1_3", "a_3_1", "a_1_2"])
+paths_alarm = Awaria.getPaths()
 
-master.executePaths()
-alarm.executePaths()
+automats = {
+    "Master":master,
+    "Awaria":Awaria
+}
+
+master.executePaths(automats)
+
+
