@@ -35,7 +35,6 @@ for indices in form_to:
         # add transition to source state
         master_states[from_idx].transitions.append(transition)
 
-
 # create a generator class
 class Generator(StateMachine):
     states = []
