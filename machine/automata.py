@@ -67,16 +67,94 @@ class Automata():
     def getPaths(self):
         return self.paths
 
-    def getPath(self, state1, state2):
+    def getPathName(self):
+        for transition in self.getTransitions():
+            i = transition.find('_')
+            return transition[:i]
 
-        for path in self.paths:
-            if state1 in path and state2 in path:
-                if path.index(state1) < path.index(state2):
-                    return path[path.index(state1):path.index(state2)+1]
+    def getValuesFromString(self, string):
+        i = string.find('_')
+        string = string[i + 1:]
+        i = string.find('_')
+        end = string[i + 1:]
+        start = string[:i]
+
+        return start,end
+
+
+
+    def getPath(self, state_in, state_out):
+
+        transitions = self.getTransitions()
+        states = self.getStatesObjects()
+
+        #convert state names to numbers
+        i = 0
+        for state in states:
+            if state.value == state_in:
+                state_in = i
+            if state.value == state_out:
+                state_out = i
+            i += 1
+
+        #BFS algorithm
+        dict = {}
+        toVisit = [state_in]
+        visited = set()
+        isParent = [state_in]
+
+        while len(toVisit)>0:
+            isVisited = False
+
+
+            # find next state
+            while(not isVisited):
+                if len(toVisit) == 0:
+                    return []
+                if(toVisit[0] in visited):
+                    toVisit.pop(0)
                 else:
-                    return path[path.index(state2):path.index(state1)+1]
+                    consideredState = toVisit[0]
+                    isVisited = True
+            visited.add(consideredState)
 
-        return []
+            # if sought state is found, stop the loop
+            if consideredState == state_out:
+                break
+
+            # find possible transitions
+            for transition in transitions:
+                start,end = self.getValuesFromString(transition)
+                if int(start) == consideredState:
+                    toVisit.append(int(end))
+                    if int(end) not in isParent:
+                        dict[int(end)] = int(start)
+                        isParent.append(int(end))
+
+        #get int path
+        path = []
+        path.append(state_out)
+
+        flag = 0
+        while flag == 0:
+            state = dict.get(path[-1])
+
+            path.append(state)
+            if state == state_in:
+                flag = 1
+
+        #convert int path to string
+        path_name = self.getPathName()
+        transitions_out = []
+
+        path.reverse()
+        for i in range(len(path)-1):
+            transitions_out.append(path_name+"_"+str(path[i])+"_"+str(path[i+1]))
+
+
+        return transitions_out
+
+
 
     def executePaths(self, automats):
         for path in self.paths:
