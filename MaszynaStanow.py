@@ -62,3 +62,7 @@ automats = {
 master.executePaths(automats)
 
 
+print(master.getPath("WjazdKaroserii", "StanowiskoPuste"))
+print(Awaria.getPath("SygnalizacjaBledu", "PowrotDoProcesu"))
+
+
