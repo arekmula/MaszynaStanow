@@ -1,5 +1,11 @@
 from statemachine import StateMachine, State, Transition
 from .generator import Generator
+import re
+from itertools import groupby
+import robopy.base.model as robot
+from commands.moves import move_j
+import numpy as np
+
 
 class Automata():
     options = []
@@ -7,6 +13,7 @@ class Automata():
     from_to = []
     stateTransitions = {}
     paths = []
+    joints = {}
 
     def __init__(self):
         self.options = []
@@ -14,6 +21,7 @@ class Automata():
         self.from_to = []
         self.stateTransitions = {}
         self.paths = []
+        self.joints = {}
 
         super(Automata, self).__init__()
 
@@ -170,3 +178,47 @@ class Automata():
                     if supervisor.current_state.value == key:
                         print("Executing {} automat".format(key))
                         automats[key].executePaths(automats)
+
+
+    def addJointPositions(self, stateName, jointPositions):
+        """
+        add joint positions for given state
+        :param stateName: state of automata where you add joint positions
+        :param jointPositions: list of joint positions
+        :return:
+        """
+        self.joints[stateName] = jointPositions
+
+    def moveRobot(self, stateNames):
+        model=robot.Puma560()  # defining robot as Puma 560
+        jointStates = [self.joints[x] for x in stateNames]  # getting joints for each given state
+        paths = []
+
+        for i in range(0,len(jointStates)-1):
+            path = move_j(model, jointStates[i], jointStates[i+1])
+            paths.append(path)
+
+        path = np.concatenate(paths, axis=0)
+        print(path)
+
+        model.animate(stances=path, unit='deg', frame_rate=30)
+
+
+
+
+
+    def visualizeRobot(self, path):
+        states = []
+        for p in path:
+            indexes = re.findall('\d+', p)  # finding indexes of states in path
+            states.append(int(indexes[0]))
+            states.append(int(indexes[1]))
+        states = [i[0] for i in groupby(states)]  # deleting duplicate states that are neighbours
+
+        stateNames = []
+
+        for i in states:
+            stateNames.append((self.options[i])["name"])  # getting stateNames corresponding to their indexes
+
+        self.moveRobot(stateNames)
+

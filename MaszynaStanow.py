@@ -2,6 +2,7 @@ from statemachine import StateMachine, State, Transition
 
 from machine import automata
 
+
 # ******************* MASTER AUTOMATA **********************
 master = automata.Automata()
 
@@ -22,6 +23,12 @@ master.validTransitions(4, [0])
 master.createTransitions("m")
 master_transitions = master.getTransitions()
 
+master.addJointPositions("WjazdKaroserii", [0.0, 90.0, 0.0, 0.0, 0.0, 0.0])
+master.addJointPositions("KaroseriaWPozycji", [90.0, 90.0, 90.0, 0.0, 0.0, 0.0])
+master.addJointPositions("ZadanieWykonane", [90.0, 90.0, 0.0, 0.0, 0.0, 0.0])
+master.addJointPositions("Awaria", [90.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+master.addJointPositions("StanowiskoPuste", [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
 # ******************** ALARM AUTOMATA ***********************
 Awaria = automata.Automata()
 Awaria.defineState("SygnalizacjaBledu", True, "SygnalizacjaBledu")
@@ -38,18 +45,18 @@ Awaria.validTransitions(3, [1])
 Awaria.createTransitions("a")
 alarm_transitions = Awaria.getTransitions()
 
+Awaria.addJointPositions("SygnalizacjaBledu", [90.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+Awaria.addJointPositions("PotwierdzenieBledu", [90.0, 90.0, 0.0, 0.0, 0.0, 0.0])
+Awaria.addJointPositions("PowrotDoProcesu", [90.0, 90.0, 90.0, 0.0, 0.0, 0.0])
+Awaria.addJointPositions("WezwanieUR", [0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
-# create a generator class
 
-
-# create paths from transitions (exemplary)
 # Sciezki glownego grafu
 master.addPaths(["m_0_1", "m_1_2", "m_2_4"])
 master.addPaths(["m_0_3", "m_3_0", "m_0_1", "m_1_2", "m_2_4"])
 paths_master = master.getPaths()
 
 # Sciezki grafu alarmu
-
 Awaria.addPaths(["a_0_1", "a_1_2"])
 Awaria.addPaths(["a_0_1", "a_1_3", "a_3_1", "a_1_2"])
 paths_alarm = Awaria.getPaths()
@@ -65,4 +72,5 @@ master.executePaths(automats)
 print(master.getPath("WjazdKaroserii", "StanowiskoPuste"))
 print(Awaria.getPath("SygnalizacjaBledu", "PowrotDoProcesu"))
 
+master.visualizeRobot(master.getPath("WjazdKaroserii", "StanowiskoPuste"))
 
