@@ -72,5 +72,8 @@ master.executePaths(automats)
 print(master.getPath("WjazdKaroserii", "StanowiskoPuste"))
 print(Awaria.getPath("SygnalizacjaBledu", "PowrotDoProcesu"))
 
+
 master.visualizeRobot(master.getPath("WjazdKaroserii", "StanowiskoPuste"))
 
+master.graf(master.getPath("WjazdKaroserii", "StanowiskoPuste"))
+Awaria.graf(Awaria.getPath("SygnalizacjaBledu", "PowrotDoProcesu"))
