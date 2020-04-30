@@ -5,6 +5,8 @@ from itertools import groupby
 import robopy.base.model as robot
 from commands.moves import move_j
 import numpy as np
+import networkx as nx
+from matplotlib import pyplot as plt
 
 
 class Automata():
@@ -221,4 +223,50 @@ class Automata():
             stateNames.append((self.options[i])["name"])  # getting stateNames corresponding to their indexes
 
         self.moveRobot(stateNames)
+
+    def graf(self, path):
+        states = []
+        for p in path:
+
+            indexes = re.findall('\d+', p)  # finding indexes of states in path
+            states.append(int(indexes[0]))
+            states.append(int(indexes[1]))
+        states = [i[0] for i in groupby(states)]  # deleting duplicate states that are neighbours
+        stateNames = []
+
+        for i in states:
+            stateNames.append((self.options[i])["name"])  # getting stateNames corresponding to their indexes
+
+        self.graf_visu(stateNames, states)
+
+    def graf_visu(self, stateNames, states):
+
+        G = nx.Graph()
+        nodes_G = {}
+        # NODE
+        position_y = 300
+        for name in stateNames:
+            G.add_node(name, pos=(50, position_y), node_color=name)
+            position_y -= 100
+            nodes_G[name]='blue'
+        # EDGE
+        i = 0
+        for state in states:
+            if i+1 < len(stateNames):
+                G.add_edge(stateNames[i], stateNames[i+1], weight=state, edge_color=state)
+                i += 1
+
+        weight = nx.get_edge_attributes(G, 'weight')
+        pos = nx.get_node_attributes(G, 'pos')
+        node_color = nx.get_node_attributes(G, 'node_color')
+
+        for event in stateNames:
+            nodes_G[event] = 'red'
+            nx.draw_networkx(G, pos, node_color=[nodes_G[x] for x in node_color.values()])
+            plt.pause(1)
+            nodes_G[event] = 'blue'
+            nx.draw_networkx(G, pos, node_color=[nodes_G[x] for x in node_color.values()])
+        plt.show()
+
+
 
