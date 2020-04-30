@@ -88,19 +88,3 @@ while True:
 
 
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
