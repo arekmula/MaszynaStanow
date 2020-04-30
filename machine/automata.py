@@ -242,30 +242,61 @@ class Automata():
     def graf_visu(self, stateNames, states):
 
         G = nx.Graph()
-        nodes_G = {}
+
         # NODE
-        position_y = 300
-        for name in stateNames:
-            G.add_node(name, pos=(50, position_y), node_color=name)
-            position_y -= 100
-            nodes_G[name]='blue'
+        G.add_node('WjazdKaroserii', pos=(50, 300), node_color='WjazdKaroserii')
+        G.add_node('KaroseriaWPozycji', pos=(50, 200), node_color='KaroseriaWPozycji')
+        G.add_node('ZadanieWykonane', pos=(50, 100), node_color='ZadanieWykonane')
+        G.add_node('StanowiskoPuste', pos=(50, 2), node_color='StanowiskoPuste')
+        G.add_node('Awaria', pos=(5, 22), node_color='Awaria')
         # EDGE
-        i = 0
-        for state in states:
-            if i+1 < len(stateNames):
-                G.add_edge(stateNames[i], stateNames[i+1], weight=state, edge_color=state)
-                i += 1
+        G.add_edge('WjazdKaroserii', 'KaroseriaWPozycji', weight='m_0_1', edge_color='m_0_1')
+        G.add_edge('KaroseriaWPozycji', 'ZadanieWykonane', weight='m_1_2', edge_color='m_1_2')
+        G.add_edge('ZadanieWykonane', 'StanowiskoPuste', weight='m_2_3', edge_color='m_2_3')
+        G.add_edge('WjazdKaroserii', 'Awaria', weight='m_1_4', edge_color='m_1_4')
+        G.add_edge('KaroseriaWPozycji', 'Awaria', weight='m_2_4', edge_color='m_2_4')
+        G.add_edge('ZadanieWykonane', 'Awaria', weight='m_3_4', edge_color='m_3_4')
+        G.add_edge('ZadanieWykonane', 'WjazdKaroserii', weight='', edge_color='m_3_0')
+
+        # NODE
+        A = nx.Graph()
+        A.add_node('SygnalizacjaBledu', pos=(150, 300), node_color='SygnalizacjaBledu')
+        A.add_node('PotwierdzenieBledu', pos=(150, 150), node_color='PotwierdzenieBledu')
+        A.add_node('PowrotDoProcesu', pos=(120, 2), node_color='PowrotDoProcesu')
+        A.add_node('WezwanieUR', pos=(180, 2), node_color='WezwanieUR')
+        # EDGE
+        A.add_edge('SygnalizacjaBledu', 'PotwierdzenieBledu', weight='a_0_1', edge_color='a_0_1')
+        A.add_edge('PotwierdzenieBledu', 'PowrotDoProcesu', weight='a_1_2', edge_color='a_1_2')
+        A.add_edge('PotwierdzenieBledu', 'WezwanieUR', weight='a_1_3', edge_color='a_1_3')
+
+        nodes_G = {'WjazdKaroserii': 'blue', 'KaroseriaWPozycji': 'blue', 'ZadanieWykonane': 'blue',
+                   'StanowiskoPuste': 'blue', 'Awaria': 'blue'}
+        edges_G = {'m_0_1': 'black', 'm_1_2': 'black', 'm_2_3': 'black', 'm_1_4': 'black', 'm_2_4': 'black',
+                   'm_3_4': 'black', 'm_3_0': 'black'}
+        nodes_A = {'SygnalizacjaBledu': 'blue', 'PotwierdzenieBledu': 'blue', 'PowrotDoProcesu': 'blue',
+                   'WezwanieUR': 'blue'}
+        edges_A = {'a_0_1': 'black', 'a_1_2': 'black', 'a_1_3': 'black', 'a_3_1': 'black'}
 
         weight = nx.get_edge_attributes(G, 'weight')
         pos = nx.get_node_attributes(G, 'pos')
         node_color = nx.get_node_attributes(G, 'node_color')
 
+        weightA = nx.get_edge_attributes(A, 'weight')
+        posA = nx.get_node_attributes(A, 'pos')
+        node_colorA = nx.get_node_attributes(A, 'node_color')
+
+      #  nx.draw_networkx(G, pos, node_color=[nodes_G[x] for x in node_color.values()])
+       # nx.draw_networkx(A, posA, node_color=[nodes_A[x] for x in node_colorA.values()])
         for event in stateNames:
             nodes_G[event] = 'red'
+            nodes_A[event] = 'red'
             nx.draw_networkx(G, pos, node_color=[nodes_G[x] for x in node_color.values()])
+            nx.draw_networkx(A, posA, node_color=[nodes_A[x] for x in node_colorA.values()])
             plt.pause(1)
             nodes_G[event] = 'blue'
+            nodes_A[event] = 'blue'
             nx.draw_networkx(G, pos, node_color=[nodes_G[x] for x in node_color.values()])
+            nx.draw_networkx(A, posA, node_color=[nodes_A[x] for x in node_colorA.values()])
         plt.show()
 
 
